@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>志愿录取系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        #header {
+            text-align: center;
+            padding: 2px;
+            color: white;
+            background:#0984d9;
+        }
+
+        #main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #menu {
+            background: #ffffff; /* 淡灰色 */
+            padding: 20px;
+            width: 20%;
+            overflow-y: auto;
+        }
+
+        #menu-options {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            color: #909399;/* 字的颜色是#909399 */
+        }
+
+        .menu-option {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #ffffff; 
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #result {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            color: #5e6166;
+            background: #daedf9; /* 渐进色，绿色 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 标题栏 -->
+    <div id="header">
+        <h1>志愿录取系统</h1>
+    </div>
+
+    <!-- 主要内容 -->
+    <div id="main-content">
+
+    <!-- 菜单栏 -->
+    <div id="menu">
+        <ul id="menu-options">
+            <li class="menu-option" onclick="showResult('招生计划')">招生计划</li>
+            <li class="menu-option" onclick="showResult('录取结果')">录取结果</li>
+            <li class="menu-option" onclick="showResult('退档队列')">退档队列</li>
+            <li class="menu-option" onclick="showResult('成绩分析')">成绩分析</li>
+            <li class="menu-option" onclick="showResult('人数分布')">人数分布</li>
+            <li class="menu-option" onclick="downloadExcel()">下载数据</li>
+            <!-- 其他菜单选项 -->
+        </ul>
+    </div>
+
+    <!-- 结果区域 -->
+    <div id="result">
+        <p id="result-text">欢迎来到志愿录取系统</p>
+    </div>
+
+</div>
+
+<script>
+    function showResult(text) {
+        document.getElementById('result-text').innerText = text;
+    }
+</script>
+
+<script>
+    function downloadExcel() {
+        // 发起与后端API的请求
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/download-excel', true);
+        xhr.responseType = 'blob'; // 设置响应类型为二进制数据
+
+        xhr.onload = function () {
+            // 创建一个虚拟的文件下载链接
+            var element = document.createElement('a');
+
+            // 创建Blob对象，表示一个不可变、原始数据的类文件对象
+            var blob = new Blob([xhr.response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            // 设置链接的href属性为Blob的URL表示形式
+            element.href = URL.createObjectURL(blob);
+
+            // 设置下载文件的名称
+            element.download = 'data.xlsx';
+
+            // 将虚拟链接添加到DOM中
+            document.body.appendChild(element);
+
+            // 模拟点击链接进行下载
+            element.click();
+
+            // 下载完成后移除虚拟链接
+            document.body.removeChild(element);
+        };
+
+        // 发送请求
+        xhr.send();
+    }
+</script>
+
+
+
+</body>
+</html>
